@@ -1,5 +1,5 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="alternative" href="/atom.xml" title="Fengz0108's Blog" type="application/atom+xml"><link rel="icon" href="/favicon.png"><title>rt5350开发笔记（一） - Fengz0108's Blog</title><link rel="stylesheet" href="/css/main.css" type="text/css">
-<!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--></head><body><header class="head"><h1 class="head-title u-fl"><a href="/">Fengz0108's Blog</a></h1><nav class="head-nav u-fr"><ul class="head-nav__list"><li class="head-nav__item"><a href="/" class="head-nav__link">Home</a></li><li class="head-nav__item"><a href="/archives" class="head-nav__link">Archives</a></li></ul></nav></header><main class="main"><article class="post"><header class="post__head"><time datetime="2015-01-02T08:48:55.000Z" class="post__time">一月 2, 2015</time><h1 class="post__title"><a href="/2015/01/02/rt5350开发笔记（一）/">rt5350开发笔记（一）</a></h1></header><div class="post__main echo"><blockquote>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" content="fengz0108"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="alternative" href="/atom.xml" title="青霜" type="application/atom+xml"><link rel="icon" href="/favicon.ico"><title>rt5350开发笔记（一） - 青霜</title><link rel="stylesheet" href="/css/style.css" type="text/css">
+<!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--></head><body><header class="site-head"><div class="inner"><h1 class="site-title u-fl"><a href="/">青霜</a></h1><nav class="site-nav u-fr"><ul class="site-nav__list"><li class="site-nav__item"><a href="/" class="site-nav__link">Home</a></li><li class="site-nav__item"><a href="/archives" class="site-nav__link">Archives</a></li></ul></nav></div></header><section class="site-content"><main class="site-main"><article class="post"><header class="post__head"><time datetime="2015-01-02T08:48:55.000Z" class="post__time">一月 2, 2015</time><h1 class="post__title"><a href="/2015/01/02/rt5350开发笔记（一）/">rt5350开发笔记（一）</a></h1></header><div class="post__main"><blockquote>
 <p>背景：采用RT5350开发板做做主控器，配合声音采集模块实现声音采集，混声，组网传输等功能的系统。已有了声音采集模I2C配置程序（stm32），I2S配置程序（有问题）。</p>
 </blockquote>
 <h2 id="RT5350">RT5350</h2>
@@ -17,9 +17,9 @@
 <h3 id="配置GPIO为I2C模式">配置GPIO为I2C模式</h3>
 <p>在文档资料中的第九部分提到GPIO的配置说明，但是里面只是提到<strong>GPIO7~GPIO14</strong>。根据 <strong>datasheet</strong>中 <em>1.3 PinSharing Scheme</em>中提到I2C是GPIO1和GPIO2，所以如何配置还需从Datasheet中找。在内核配置-&gt;Devices Driver-&gt;Character devices下我们看到有一个<strong>Ralink RT2880 I2C Support</strong>很显然这是一个厂商提供的I2C设备例程，当然这也是我们最终参考的程序。</p>
 <p>在主函数<em>i2cdrv_init</em>中有一行代码，就是将GPIO配制成I2C模式</p>
-<pre><code>/* configure i2c <span class="keyword">to</span> <span class="keyword">normal</span> <span class="built_in">mode</span> */ 
-RT2880_RGE (RALINK_SYSCTL_BASE + <span class="number">0</span>x60） &amp;= ~<span class="number">1</span>；
-</code></pre><p>在Datasheet中<em>3.4 System Control</em>中找到<strong>GPIO Purpose Select</strong>中提到该寄存器b[1]=1为I2C模式，b[1]=0则为GPIO模式。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/* configure i2c <span class="keyword">to</span> <span class="keyword">normal</span> <span class="built_in">mode</span> */ </div><div class="line">RT2880_RGE (RALINK_SYSCTL_BASE + <span class="number">0</span>x60） &= ~<span class="number">1</span>；</div></pre></td></tr></table></figure>
+
+<p>在Datasheet中<em>3.4 System Control</em>中找到<strong>GPIO Purpose Select</strong>中提到该寄存器b[1]=1为I2C模式，b[1]=0则为GPIO模式。</p>
 <h3 id="开发板I2C控制器初始化">开发板I2C控制器初始化</h3>
 <p>这部分代码在i2c_drv.c</p>
 <pre><code><span class="keyword">void</span> i2c_master_init (<span class="keyword">void</span>)
@@ -29,54 +29,18 @@ RT2880_RGE (RALINK_SYSCTL_BASE + <span class="number">0</span>x60） &amp;= ~<sp
 <span class="preprocessor">#<span class="keyword">define</span> FM34_ADDR     (0xC0&gt;&gt;1)</span>
 </code></pre><h3 id="i2c_write">i2c_write</h3>
 <p>根据俊哥的程序，需要这个函数完成一个连续8byte的连续写入，结合Datesheet和i2c_drv.c的写函数修改如下</p>
-<pre><code><span class="keyword">int</span> i2c_write(<span class="keyword">u8</span>* data,<span class="keyword">u8</span> len)
-{
-    <span class="keyword">int</span> i,j;
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">int i2c_write(u8* data,u8 len)</div><div class="line">{</div><div class="line">	int i,j;</div><div class="line"></div><div class="line">	RT2880_REG(RT2880_I2C_BYTECNT_REG) = len-1;</div><div class="line"></div><div class="line">	RT2880_REG(RT2880_I2C_DATAOUT_REG) = data[0];</div><div class="line"></div><div class="line">	RT2880_REG(RT2880_I2C_STARTXFR_REG) = WRITE_CMD;</div><div class="line"></div><div class="line">	for(i=1;i&lt;len;i++)</div><div class="line">		{</div><div class="line">	//	printk(<span class="string">"%d "</span>,i);</div><div class="line">		udelay(170);</div><div class="line">			j = 0;</div><div class="line">			do{</div><div class="line">				if(IS_SDOEMPTY){</div><div class="line">					RT2880_REG(RT2880_I2C_DATAOUT_REG) = data[i];</div><div class="line">					}</div><div class="line">				break;</div><div class="line">			  }while (++j&lt;max_ee_busy_loop);</div><div class="line">			}</div><div class="line">			i = 0;</div><div class="line">			while(IS_BUSY && i&lt;i2c_busy_loop){</div><div class="line">			i++;</div><div class="line">				}</div><div class="line">		return true;</div><div class="line">	}</div></pre></td></tr></table></figure>
 
-    RT2880_REG(RT2880_I2C_BYTECNT_REG) = len-<span class="number">1</span>;
-
-    RT2880_REG(RT2880_I2C_DATAOUT_REG) = data[<span class="number">0</span>];
-
-    RT2880_REG(RT2880_I2C_STARTXFR_REG) = WRITE_CMD;
-
-    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;len;i++)
-        {
-    <span class="comment">//    printk("%d ",i);</span>
-    udelay(<span class="number">170</span>);
-        j = <span class="number">0</span>;
-        <span class="keyword">do</span>{
-            <span class="keyword">if</span>(IS_SDOEMPTY){
-                RT2880_REG(RT2880_I2C_DATAOUT_REG) = data[i];
-                }
-            <span class="keyword">break</span>;
-          }<span class="keyword">while</span> (++j&lt;max_ee_busy_loop);
-        }
-        i = <span class="number">0</span>;
-        <span class="keyword">while</span>(IS_BUSY &amp;&amp; i&lt;i2c_busy_loop){
-        i++;
-            }
-    <span class="keyword">return</span> <span class="keyword">true</span>;
-}
-</code></pre><p>在调试过程中有很多问题需要注意：</p>
+<p>在调试过程中有很多问题需要注意：</p>
 <ol>
 <li>调试工具可以使用建议逻辑分析仪看I2C输出。可以看到是否有数据写出，根据协议首先写出的是设备地址，查看是否有应答信号，有应答信号再继续。工具为<strong>SALEAE</strong></li>
 <li>在调试过程中要注意延时，谨慎使用<code>printk</code>函数 因为该函数会造成延时，导致输出结果不可预测。开始没有正确数据出来，加上<code>printk (&quot;%d&quot;,i);</code>后可以看到数据正常传出但是从第二个开始就有一小段延时，没法解释，后来才是知道就是打印字符的时间。</li>
 <li>结合逻辑分析仪软件读出一个字节数据传出需要150ms的时间，于是加入延时<code>udelay (170);</code>后数据连续传出很漂亮。  </li>
 </ol>
 <h3 id="写设备控制命令串">写设备控制命令串</h3>
-<pre><code><span class="keyword">unsigned</span> <span class="keyword">char</span> fm_WriteMem(<span class="keyword">unsigned</span> <span class="keyword">char</span> AdrHi,<span class="keyword">unsigned</span> <span class="keyword">char</span> AdrLo,<span class="keyword">unsigned</span> <span class="keyword">char</span> DataHi,<span class="keyword">unsigned</span> <span class="keyword">char</span> DataLo)
-{
-    <span class="keyword">unsigned</span> <span class="keyword">char</span> wBuf[<span class="number">7</span>];
-    wBuf[<span class="number">0</span>] = <span class="number">0xfc</span>;
-    wBuf[<span class="number">1</span>] = <span class="number">0xf3</span>;
-    wBuf[<span class="number">2</span>] = <span class="number">0x3b</span>;
-    wBuf[<span class="number">3</span>] = AdrHi;
-    wBuf[<span class="number">4</span>] = AdrLo;
-    wBuf[<span class="number">5</span>] = DataHi;
-    wBuf[<span class="number">6</span>] = DataLo;
-    <span class="keyword">return</span> i2c_write(wBuf,<span class="number">7</span>);
-}
-</code></pre><p>设备命令字符串的结构在<em>FM34-500B Datasheet V1.4</em>的<em>2.6 SHI (Serial Host Interface)</em>中有详细的解释与说明。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> fm_WriteMem(<span class="keyword">unsigned</span> <span class="keyword">char</span> AdrHi,<span class="keyword">unsigned</span> <span class="keyword">char</span> AdrLo,<span class="keyword">unsigned</span> <span class="keyword">char</span> DataHi,<span class="keyword">unsigned</span> <span class="keyword">char</span> DataLo)</div><div class="line">{</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> wBuf[<span class="number">7</span>];</div><div class="line">	wBuf[<span class="number">0</span>] = <span class="number">0xfc</span>;</div><div class="line">	wBuf[<span class="number">1</span>] = <span class="number">0xf3</span>;</div><div class="line">	wBuf[<span class="number">2</span>] = <span class="number">0x3b</span>;</div><div class="line">	wBuf[<span class="number">3</span>] = AdrHi;</div><div class="line">	wBuf[<span class="number">4</span>] = AdrLo;</div><div class="line">	wBuf[<span class="number">5</span>] = DataHi;</div><div class="line">	wBuf[<span class="number">6</span>] = DataLo;</div><div class="line">	<span class="keyword">return</span> i2c_write(wBuf,<span class="number">7</span>);</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>设备命令字符串的结构在<em>FM34-500B Datasheet V1.4</em>的<em>2.6 SHI (Serial Host Interface)</em>中有详细的解释与说明。</p>
 <h3 id="读设备控制命令">读设备控制命令</h3>
 <pre><code><span class="keyword">unsigned</span> <span class="keyword">int</span> fm_ReadMem(<span class="keyword">unsigned</span> <span class="keyword">char</span> AdrHi,<span class="keyword">unsigned</span> <span class="keyword">char</span> AdrLo,<span class="keyword">int</span>* data)
 {
@@ -157,4 +121,4 @@ RT2880_RGE (RALINK_SYSCTL_BASE + <span class="number">0</span>x60） &amp;= ~<sp
 <h3 id="后记">后记</h3>
 <p>到此FM34配置工作的已结束，下一步要看I2S的驱动。</p>
 <p>调试方法还是编译模块<strong>fm_drv.ko</strong>，通过<strong>insmod</strong>命令加载测试。</p>
-</div><footer class="post__foot u-cf"><a href="/2015/01/02/rt5350开发笔记（一）/#disqus_thread" class="post__foot-link u-fr">0 COMMENTS</a></footer></article></main><footer class="foot"><div class="foot-copy u-fl">&copy; 2015 fengz0108</div><menu class="page-menu u-fr"><li class="page-menu__item"><span title="Previous" class="page-menu__link icon-arrow-left page-menu__link--disabled"></span></li><li class="page-menu__item"><a title="Next" href="/2015/01/02/postName/" class="page-menu__link icon-arrow-right"></a></li></menu></footer></body></html>
+</div><footer class="post__foot u-cf"><a href="/2015/01/02/rt5350开发笔记（一）/#comments" class="post__foot-link u-fr">评论</a></footer></article></main><aside class="site-aside"><div class="widget about"><div class="b"><div class="info u-cf"><img src="/avatar.jpg"><div class="text"> <p>Your Name</p><p>More info</p><p>Job</p><p> <a href="###" title="wiebo" class="weibo ico"></a><a href="###" title="qq" class="qq ico"></a><a href="###" title="github" class="github ico"></a></p></div></div></div></div><div class="widget tags"><div class="h">categories</div><div class="b"> <ul></ul></div></div><div class="widget links"><div class="h">links</div><div class="b"> <ul><li><a href="http://riny.net">Bubblings blog</a></li><li><a href="http://baidu.com">测试</a></li></ul></div></div></aside></section><footer class="site-foot"><div class="inner"><div class="site-copy u-fl">© 2015 fengz<bdi> ❤ Theme by <a href="http://riny.net" target="_blank">Bubblings</a> and <a href="http://unmric.com/" target="_blank">unmric</a></bdi></div><menu class="page-menu u-fr"><li class="page-menu__item"><a title="Previous" href="/2015/01/02/test/" class="page-menu__link icon-arrow-left">prev</a></li><li class="page-menu__item"><a title="Next" href="/2015/01/02/hello-world/" class="page-menu__link icon-arrow-right">next</a></li></menu></div></footer></body></html>
