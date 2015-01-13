@@ -1,73 +1,9 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" content="fengz0108"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="alternative" href="/atom.xml" title="青霜" type="application/atom+xml"><link rel="icon" href="/favicon.ico"><title>Git - 青霜</title><link rel="stylesheet" href="/css/style.css" type="text/css">
-<!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--></head><body><header class="site-head"><div class="inner"><h1 class="site-title u-fl"><a href="/">青霜</a></h1><nav class="site-nav u-fr"><ul class="site-nav__list"><li class="site-nav__item"><a href="/" class="site-nav__link">Home</a></li><li class="site-nav__item"><a href="/archives" class="site-nav__link">Archives</a></li><li class="site-nav__item"><a href="/about" class="site-nav__link">About</a></li></ul></nav></div></header><section class="site-content"><main class="site-main"><article class="post"><header class="post__head"><time datetime="2015-01-03T02:49:36.000Z" class="post__time">一月 3, 2015</time><h1 class="post__title"><a href="/2015/01/03/Git学习笔记（一）/">Git 学习笔记</a></h1></header><div class="post__main"><h2 id="什么是Git">什么是Git</h2>
+<!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--></head><body><header class="site-head"><div class="inner"><h1 class="site-title u-fl"><a href="/">青霜</a></h1><nav class="site-nav u-fr"><ul class="site-nav__list"><li class="site-nav__item"><a href="/" class="site-nav__link">Home</a></li><li class="site-nav__item"><a href="/archives" class="site-nav__link">Archives</a></li></ul></nav></div></header><section class="site-content"><main class="site-main"><article class="post"><header class="post__head"><time datetime="2015-01-03T02:49:36.000Z" class="post__time">一月 3, 2015</time><h1 class="post__title"><a href="/2015/01/03/Git学习笔记（一）/">Git 学习笔记</a></h1></header><div class="post__main"><h2 id="什么是Git">什么是Git</h2>
 <blockquote>
 <p>Git 是世界上最先进的版本控制器（没有之一）。是Linux的创始人Linus为了方便Linux的代码花费两周而开发出来的一套分布式版本控制器。</p>
 </blockquote>
 <p>突然不禁感叹牛人就是分分钟改变世界！</p>
 <h2 id="安装Git">安装Git</h2>
 <h3 id="在Windows下安装">在Windows下安装</h3>
-<p>只需下载安装<a href="http://msysgit.github.io/" target="_blank" rel="external">Git客户端</a>默认安装就好了。<br><a id="more"></a><br>安装完成之后在开始菜单里找到Git Bash，通过这个使用Git。然后进行进一步设置，在命令行里输入：</p>
-<pre><code>$ git config --global <span class="literal">user</span>.name <span class="string">"Your Name"</span>
-$ git config --global <span class="literal">user</span>.email <span class="string">"email@example.com"</span>
-</code></pre><p>注意<code>git config</code>命令的<code>--global</code>参数，用了这个参数，表示你这台机器上所有的Git仓库都会使用这个配置，当然也可以对某个仓库指定不同的用户名和Email地址。</p>
-<h3 id="在Linux下安装">在Linux下安装</h3>
-<p>首先，试着输入<code>git</code>看系统是否已经安装Git：</p>
-<pre><code>$ git
-The program <span class="string">'git'</span> is currently <span class="operator">not</span> installed. You can install <span class="keyword">it</span> <span class="keyword">by</span> typing:
-sudo apt-<span class="built_in">get</span> install git
-</code></pre><p>若无，输入<code>sudo apt-get install git</code>安装即可</p>
-<h2 id="创建版本库">创建版本库</h2>
-<p>什么是版本库呢？版本库又名仓库，英文名repository，你可以简单理解成一个目录，这个目录里面的所有文件都可以被Git管理起来，每个文件的修改、删除，Git都能跟踪，以便任何时刻都可以追踪历史，或者在将来某个时刻可以“还原”。</p>
-<p>创建方法</p>
-<p>第一步，创建一个新目录：</p>
-<pre><code>$ <span class="built_in">mkdir</span> learngit
-$ <span class="keyword">cd</span> learngit
-$ <span class="keyword">pwd</span>
-/Users/michael/learngit
-</code></pre><p><code>pwd</code>命令是显示当前目录。</p>
-<p>第二步，初始化仓库：</p>
-<pre><code><span class="variable">$ </span>git init 
-</code></pre><h2 id="添加文件到仓库">添加文件到仓库</h2>
-<p>在仓库目录下新建文件，然后使用命令</p>
-<pre><code>$ git <span class="built_in">add</span> &lt;<span class="keyword">file</span>&gt;
-$ git commit -<span class="keyword">m</span> <span class="string">"说明与注释"</span>
-</code></pre><p>可以add很多文件，一次性commit，此外查看工作区状态使用<code>git status</code>命令</p>
-<p>若<code>git status</code>告知有文件改动，可以使用<code>git diff</code>查看修改内容</p>
-<h2 id="版本退回">版本退回</h2>
-<ul>
-<li><code>HEAD</code>指向当前版本，使用<code>git reset --hard commit_id</code>可以在历史版本之前穿梭</li>
-<li>可以使用<code>git log</code>来查看历史版本以及他们的commit_id</li>
-<li>要重返未来，可以使用<code>git relog</code>来查看历史版本。</li>
-</ul>
-<h2 id="撤消修改">撤消修改</h2>
-<ul>
-<li>若是你乱改了工作区的内容，想丢工作区的修改只需使用命令<code>git checkout -- file</code></li>
-<li>若是你不进修改了工作区还add了那就先<code>git reset HEAD file</code>,然后再按上一条恢复</li>
-<li>若是已经commit则先版本退回</li>
-</ul>
-<h2 id="删除文件">删除文件</h2>
-<pre><code>$ git rm &lt;<span class="keyword">file</span>&gt;
-</code></pre><p>误删还原</p>
-<pre><code>$ git checkout -- &lt;<span class="keyword">file</span>&gt;
-</code></pre><h2 id="远程仓库">远程仓库</h2>
-<p>什么是Github</p>
-<p>Github是一个提供Git仓库托管的网站，只需注册一个Github账号就能免费获得Git的远程仓库。</p>
-<p>由于你的本地Git仓库和GitHub仓库之间的传输是通过SSH加密的，所以，需要一点设置：</p>
-<p>第一步：创建SSH Key。在Windows下打开Git Bash创建：</p>
-<pre><code><span class="variable">$ </span>ssh -keygen -t rsa -<span class="constant">C</span> <span class="string">"youremail@example.com"</span>
-</code></pre><p>无需设置密码一路回车即可。然后你会在用户目录里找到<code>.ssh</code>目录，里面有<code>id_rsa</code>和<code>id_rsa.pub</code>两个文件，这两个就是SSH Key的密钥对，<code>is_rsa</code>是私钥不可泄露，<code>id_rsa.pub</code>是公钥，可以告诉别人。</p>
-<p>第二步：登录Github，打开”Account settings”,”SSH Key”页面，点击”Add SSH Key”,填上任意Title将id_rsa.pub里的内容复制进去即可。</p>
-<h2 id="添加远程仓库">添加远程仓库</h2>
-<p>首先登录Github创建一个仓库</p>
-<p>创建本地仓库与远程仓库的关联，在本地仓库下运行命令：</p>
-<pre><code><span class="variable">$ </span>git remote add origin git<span class="variable">@github</span>.<span class="symbol">com:</span>fengz0108/xxx.git
-</code></pre><p>本地内容推送到远程：</p>
-<pre><code><span class="variable">$ </span>git push -u origin master
-</code></pre><p>由于远程库是空的，我们第一次推送<code>master</code>分支时，加上了<code>-u</code>参数，Git不但会把本地的<code>master</code>分支内容推送的远程新的<code>master</code>分支，还会把本地的<code>master</code>分支和远程的<code>master</code>分支关联起来，在以后的推送或者拉取时就可以简化命令。</p>
-<pre><code><span class="variable">$ </span>git push origin master
-</code></pre><h2 id="远程克隆">远程克隆</h2>
-<pre><code><span class="variable">$ </span>git clone git<span class="variable">@github</span>.<span class="symbol">com:</span>fengz0108/xxx.git
-</code></pre><hr>
-<h2 id="参考链接：">参考链接：</h2>
-<p><a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" target="_blank" rel="external">Git 教程</a></p>
-</div><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a href="/tags/Git/" class="post__tag__link">Git</a></li></ul><a href="/2015/01/03/Git学习笔记（一）/#comments" class="post__foot-link u-fr">评论</a></footer></article></main><aside class="site-aside"><div class="widget about"><div class="b"><div class="info u-cf"><img src="/avatar.jpg"><div class="text"> <p>Feng Zhu</p><p>UESTC</p><p>MCC</p><p> <a href="http://weibo.com/p/1005051656737613" title="wiebo" class="weibo ico"></a><a href="http://user.qzone.qq.com/289070999/" title="289070999" class="qq ico"></a><a href="https://github.com/fengz0108" title="github" class="github ico"></a></p></div></div></div></div><div class="widget tags"><div class="h">categories</div><div class="b"> <ul><li><a href="/categories/Linux/">Linux</a><small>(1)</small></li><li><a href="/categories/Git/">Git</a><small>(1)</small></li><li><a href="/categories/Hexo/">Hexo</a><small>(1)</small></li></ul></div></div><div class="widget links"><div class="h">links</div><div class="b"> <ul><li><a href="http://riny.net">Bubblings blog</a></li><li><a href="http://baidu.com">测试</a></li></ul></div></div></aside></section><footer class="site-foot"><div class="inner"><div class="site-copy u-fl">© 2015 fengz<bdi> ❤ Theme by <a href="http://riny.net" target="_blank">Bubblings</a> and <a href="http://unmric.com/" target="_blank">unmric</a></bdi></div><menu class="page-menu u-fr"><li class="page-menu__item"><span title="Previous" class="page-menu__link icon-arrow-left page-menu__link--disabled">prev</span></li><li class="page-menu__item"><span title="Next" class="page-menu__link icon-arrow-right page-menu__link--disabled">next</span></li></menu></div></footer></body></html>
+<p>只需下载安装<a href="http://msysgit.github.io/" target="_blank" rel="external">Git客户端</a>默认安装就好了。<br></div><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a href="/tags/Git/" class="post__tag__link">Git</a></li></ul><a href="/2015/01/03/Git学习笔记（一）/#comments" class="post__foot-link u-fr">评论</a></footer></article></main><aside class="site-aside"><div class="widget about"><div class="b"><div class="info u-cf"><img src="/avatar.jpg"><div class="text"> <p>Your Name</p><p>More info</p><p>Job</p><p> <a href="###" title="wiebo" class="weibo ico"></a><a href="###" title="qq" class="qq ico"></a><a href="###" title="github" class="github ico"></a></p></div></div></div></div><div class="widget tags"><div class="h">categories</div><div class="b"> <ul><li><a href="/categories/Linux/">Linux</a><small>(1)</small></li><li><a href="/categories/Hexo/">Hexo</a><small>(1)</small></li><li><a href="/categories/Git/">Git</a><small>(1)</small></li></ul></div></div><div class="widget links"><div class="h">links</div><div class="b"> <ul><li><a href="http://riny.net">Bubblings blog</a></li><li><a href="http://baidu.com">测试</a></li></ul></div></div></aside></section><footer class="site-foot"><div class="inner"><div class="site-copy u-fl">© 2015 fengz<bdi> ❤ Theme by <a href="http://riny.net" target="_blank">Bubblings</a> and <a href="http://unmric.com/" target="_blank">unmric</a></bdi></div><menu class="page-menu u-fr"><li class="page-menu__item"><span title="Previous" class="page-menu__link icon-arrow-left page-menu__link--disabled">prev</span></li><li class="page-menu__item"><span title="Next" class="page-menu__link icon-arrow-right page-menu__link--disabled">next</span></li></menu></div></footer><div id="back-top" title="返回顶部"></div><script src="/js/script.js"></script></body></html>
