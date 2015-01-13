@@ -1,65 +1,9 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" content="fengz0108"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="alternative" href="/atom.xml" title="青霜" type="application/atom+xml"><link rel="icon" href="/favicon.ico"><title>Linux - 青霜</title><link rel="stylesheet" href="/css/style.css" type="text/css">
 <!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--></head><body><header class="site-head"><div class="inner"><h1 class="site-title u-fl"><a href="/">青霜</a></h1><nav class="site-nav u-fr"><ul class="site-nav__list"><li class="site-nav__item"><a href="/" class="site-nav__link">Home</a></li><li class="site-nav__item"><a href="/archives" class="site-nav__link">Archives</a></li></ul></nav></div></header><section class="site-content"><main class="site-main"><article class="post"><header class="post__head"><time datetime="2015-01-13T13:49:36.000Z" class="post__time">一月 13, 2015</time><h1 class="post__title"><a href="/2015/01/13/Elementary OS安装配置指南/">Elementary OS安装配置指南</a></h1></header><div class="post__main"><h2 id="Elementary_OS简介与安装">Elementary OS简介与安装</h2>
 <p><a href="http://elementaryos.org/" target="_blank" rel="external">Elementary OS</a>是一款基于Ubuntu精心打磨美化的桌面Linux发行版，号称 “最美的Linux”。Elementary 最早是Ubuntu的一个美化主题项目，现在成了独立的发行版。我们安装的的版本是Elementary OS Luna系统，基于Ubuntu12.04打造<a href="http://www.iplaysoft.com/elementary-os.html" target="_blank" rel="external">下载链接</a>。</p>
-<p>安装过程不必多说了和Ubuntu一样，需要注意的是系统引导工具就装载<code>/</code>下即可，然后重启会进入Windows然后用easyBCD添加引导就好，这样是最方便的。</p>
-<h2 id="安装之后的配置">安装之后的配置</h2>
-<h3 id="安装更新">安装更新</h3>
-<p>安装时选择英语，安装完后进入系统，点左上角，找到system—&gt;update,打开后，选择setting，选择最快的更新服务器。</p>
-<p>打开终端：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="built_in">get</span> <span class="keyword">update</span></div><div class="line">sudo apt-<span class="built_in">get</span> upgrade</div></pre></td></tr></table></figure>
-
-<h3 id="安装elementary-tweaks">安装elementary-tweaks</h3>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="built_in">add</span>-repository <span class="keyword">pp</span><span class="variable">a:versable</span>/elementary-<span class="keyword">update</span></div><div class="line">sudo apt-<span class="built_in">get</span> <span class="keyword">update</span></div><div class="line">sudo apt-<span class="built_in">get</span> install elementary-tweaks</div></pre></td></tr></table></figure>
-
-<p>安装好了设置里面会多一个tweaks可以修改很多参数。</p>
-<h3 id="中文支持">中文支持</h3>
-<p>System Settings -&gt;Lauguage Support -&gt;install/remove language 选择 chinese（sim）。安装完后，Apply System Wide 上面的语言栏 汉语在最下面，拖到最上面，点击Apply System Wide即可。</p>
-<h3 id="文件浏览器右键终端">文件浏览器右键终端</h3>
-<p>新建一个文件terminal.contract在里面填写以下内容</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="title">[Contractor Entry]</span></div><div class="line"><span class="setting">Name=<span class="value">此处打开终端</span></span></div><div class="line"><span class="setting">Icon=<span class="value">terminal</span></span></div><div class="line"><span class="setting">Description=<span class="value">此处打开终端</span></span></div><div class="line"><span class="setting">MimeType=<span class="value">inode;application/x-sh;application/x-executable;</span></span></div><div class="line"><span class="setting">Exec=<span class="value">pantheon-terminal -d %U</span></span></div><div class="line"><span class="setting">Gettext-Domain=<span class="value">pantheon-terminal</span></span></div></pre></td></tr></table></figure>
-
-<p>再cp到<code>/usr/share/contractor/terminal.contract</code></p>
-<h3 id="安装软件">安装软件</h3>
-<ul>
-<li>安装sogou</li>
-</ul>
-<p><strong>先删除ibus输入法</strong></p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="built_in">get</span> <span class="built_in">remove</span> --purge ibus</div><div class="line">sudo apt-<span class="built_in">get</span> autoremove</div></pre></td></tr></table></figure>
-
-<p><strong>安装搜狗拼音</strong></p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo <span class="built_in">add</span>-apt-repository <span class="keyword">pp</span><span class="variable">a:fcitx</span>-team/nightly</div><div class="line">sudo apt-<span class="built_in">get</span> <span class="keyword">update</span></div><div class="line">sudo apt-<span class="built_in">get</span> install fcitx-sogoupinyin</div></pre></td></tr></table></figure>
-
-<p>在语言支持那里选择输入法fcitx。</p>
-<p>安装完sogou输入法之后，待重启系统后，fcitx随系统启动。</p>
-<p>右键托盘的fcixt输入法图标，配置，如果没有sogou输入法，请点加号添加即可。默认CTRL+SPACE切换输入法。</p>
-<ul>
-<li>gimp和smplayer，以及build-essential</li>
-</ul>
-<p><code>sudo apt-get install gimp smplayer build-essential</code></p>
-<p><strong>移除系统自带的播放器和浏览器</strong></p>
-<p><code>sudo apt-get remove totem midori-granite noise</code></p>
-<ul>
-<li>安装chrome</li>
-</ul>
-<p>下载google-chrome-stable.deb包，百度网盘链接:<a href="http://pan.baidu.com/s/1qWwkgVU" target="_blank" rel="external">64位包</a> 密码: 0eob;<br><a href="http://pan.baidu.com/s/1bnu8L11" target="_blank" rel="external">32位包</a> 密码: 5nvr</p>
-<p><strong>安装</strong></p>
-<p><code>sudo dpkg -i google-chrome-stable*.deb</code></p>
-<p><strong>卸载</strong></p>
-<p><code>sudo dpkg -P google-chrome-stable</code></p>
-<ul>
-<li>安装WPS</li>
-</ul>
-<ol>
-<li>wps官网下载wps for linux的deb安装包</li>
-<li>安装配置环境 </li>
-</ol>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo apt-get <span class="operator"><span class="keyword">update</span></span></div><div class="line">sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> libc6-i386</div><div class="line">sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> ia32-libs</div></pre></td></tr></table></figure>
-
-<p>安装过程中肯定会报错不用理会，直接安装deb安装包就好，然后还会提示缺少必要的包，这个时候<strong>修复依赖</strong>即可。</p>
-<p><code>sudo apt-get   install  -f</code></p>
-</div><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a href="/tags/Linux/" class="post__tag__link">Linux</a></li><li class="post__tag__item"><a href="/tags/Ubuntu/" class="post__tag__link">Ubuntu</a></li></ul><a href="/2015/01/13/Elementary OS安装配置指南/#comments" class="post__foot-link u-fr">评论</a></footer></article><article class="post"><header class="post__head"><time datetime="2015-01-02T08:48:55.000Z" class="post__time">一月 2, 2015</time><h1 class="post__title"><a href="/2015/01/02/rt5350开发笔记（一）/">rt5350开发笔记（一）</a></h1></header><div class="post__main"><blockquote>
+<p>安装过程不必多说了和Ubuntu一样，需要注意的是系统引导工具就装载<code>/</code>下即可，然后重启会进入Windows然后用easyBCD添加引导就好，这样是最方便的。<br></div><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a href="/tags/Linux/" class="post__tag__link">Linux</a></li><li class="post__tag__item"><a href="/tags/Ubuntu/" class="post__tag__link">Ubuntu</a></li></ul><a href="/2015/01/13/Elementary OS安装配置指南/#comments" class="post__foot-link u-fr">评论</a></footer></article><article class="post"><header class="post__head"><time datetime="2015-01-02T08:48:55.000Z" class="post__time">一月 2, 2015</time><h1 class="post__title"><a href="/2015/01/02/rt5350开发笔记（一）/">rt5350开发笔记（一）</a></h1></header><div class="post__main"><blockquote>
 <p>背景：采用RT5350开发板做做主控器，配合声音采集模块实现声音采集，混声，组网传输等功能的系统。已有了声音采集模I2C配置程序（stm32），I2S配置程序（有问题）。</p>
 </blockquote>
 <h2 id="RT5350">RT5350</h2>
 <p>rt5350其实就是一个路由器，上面加在的是一个Linux内核的小系统，外置的接口有UART、SPI、I2C、I2S等可用于Linux开发，本次系统需要用到的只是I2C、I2S两部分，另外下载调试还需要用到ttyS1串口与LAN或WAN接口。具体信息请参考文档<strong>YG -WIFI-132开发版说明</strong></p>
-</div><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a href="/tags/I2C/" class="post__tag__link">I2C</a></li><li class="post__tag__item"><a href="/tags/Linux/" class="post__tag__link">Linux</a></li></ul><a href="/2015/01/02/rt5350开发笔记（一）/#comments" class="post__foot-link u-fr">评论</a></footer></article></main><aside class="site-aside"><div class="widget about"><div class="b"><div class="info u-cf"><img src="/avatar.jpg"><div class="text"> <p>Feng Zhu</p><p>MCC of UESTC</p><p> </p><p> <a href="http://weibo.com/u/1656737613" title="wiebo" class="weibo ico"></a><a href="289070999@qq.com" title="289070999" class="qq ico"></a><a href="http://weibo.com/u/1656737613" title="github" class="github ico"></a></p></div></div></div></div><div class="widget tags"><div class="h">categories</div><div class="b"> <ul><li><a href="/categories/Ubuntu/">Ubuntu</a><small>(1)</small></li><li><a href="/categories/Linux/">Linux</a><small>(1)</small></li><li><a href="/categories/Hexo/">Hexo</a><small>(1)</small></li><li><a href="/categories/Git/">Git</a><small>(1)</small></li></ul></div></div><div class="widget links"><div class="h">links</div><div class="b"> <ul><li><a href="http://riny.net">Bubblings blog</a></li><li><a href="http://baidu.com">测试</a></li></ul></div></div></aside></section><footer class="site-foot"><div class="inner"><div class="site-copy u-fl">© 2015 fengz<bdi> ❤ Theme by <a href="http://riny.net" target="_blank">Bubblings</a> and <a href="http://unmric.com/" target="_blank">unmric</a></bdi></div><menu class="page-menu u-fr"><li class="page-menu__item"><span title="Previous" class="page-menu__link icon-arrow-left page-menu__link--disabled">prev</span></li><li class="page-menu__item"><span title="Next" class="page-menu__link icon-arrow-right page-menu__link--disabled">next</span></li></menu></div></footer><div id="back-top" title="返回顶部"></div><script src="/js/script.js"></script></body></html>
+</div><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a href="/tags/I2C/" class="post__tag__link">I2C</a></li><li class="post__tag__item"><a href="/tags/Linux/" class="post__tag__link">Linux</a></li></ul><a href="/2015/01/02/rt5350开发笔记（一）/#comments" class="post__foot-link u-fr">评论</a></footer></article></main><aside class="site-aside"><div class="widget about"><div class="b"><div class="info u-cf"><img src="/avatar.jpg"><div class="text"> <p>Feng Zhu</p><p>MCC of UESTC</p><p> </p><p> <a href="http://weibo.com/u/1656737613" title="wiebo" class="weibo ico"></a><a href="289070999@qq.com" title="289070999" class="qq ico"></a><a href="http://weibo.com/u/1656737613" title="github" class="github ico"></a></p></div></div></div></div><div class="widget tags"><div class="h">categories</div><div class="b"> <ul><li><a href="/categories/Hexo/">Hexo</a><small>(1)</small></li><li><a href="/categories/Git/">Git</a><small>(1)</small></li><li><a href="/categories/Ubuntu/">Ubuntu</a><small>(1)</small></li><li><a href="/categories/Linux/">Linux</a><small>(1)</small></li></ul></div></div><div class="widget links"><div class="h">links</div><div class="b"> <ul><li><a href="http://riny.net">Bubblings blog</a></li><li><a href="http://baidu.com">测试</a></li></ul></div></div></aside></section><footer class="site-foot"><div class="inner"><div class="site-copy u-fl">© 2015 fengz<bdi> ❤ Theme by <a href="http://riny.net" target="_blank">Bubblings</a> and <a href="http://unmric.com/" target="_blank">unmric</a></bdi></div><menu class="page-menu u-fr"><li class="page-menu__item"><span title="Previous" class="page-menu__link icon-arrow-left page-menu__link--disabled">prev</span></li><li class="page-menu__item"><span title="Next" class="page-menu__link icon-arrow-right page-menu__link--disabled">next</span></li></menu></div></footer><div id="back-top" title="返回顶部"></div><script src="/js/script.js"></script></body></html>
